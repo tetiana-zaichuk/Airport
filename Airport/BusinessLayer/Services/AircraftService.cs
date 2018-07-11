@@ -1,48 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using PresentationLayer;
-using PresentationLayer.Model;
+using AutoMapper;
+using DataAccessLayer;
+using Shared.DTO;
 
 namespace BusinessLayer.Services
 {
-    class AircraftService
+    public class AircraftService
     {
-        public List<Aircraft> GetAircraft() => Seeds.Aircraft;
+        public DataAccessLayer.Models.Aircraft IsAircraft(int id) 
+            => DataSeends.Aircraft.FirstOrDefault(a => a.Id == id);
 
-        public string GetAircraftDetails(int id)
+        public List<Aircraft> GetAircraft() 
+            => Mapper.Map<List<DataAccessLayer.Models.Aircraft>,List<Aircraft>>(DataSeends.Aircraft);
+
+        public Aircraft GetAircraftDetails(int id)
+            => Mapper.Map<DataAccessLayer.Models.Aircraft, Aircraft>(IsAircraft(id));
+        
+        public void AddAircraft(Aircraft aircraft)
+            => DataSeends.Aircraft.Add(Mapper.Map<Aircraft, DataAccessLayer.Models.Aircraft>(aircraft));
+        
+        public void UpdateAircraft(Aircraft aircraft)
         {
-            var aircraft = Seeds.Aircraft.FirstOrDefault(a => a.Id == id);
-            return "" + aircraft?.Id + " " + aircraft?.AircraftName + " " + aircraft?.AircraftReleaseDate + " " +
-                   aircraft?.AircraftTypeId + " " + aircraft?.ExploitationTimeSpan;
+            var plane = IsAircraft(aircraft.Id);
+            plane.AircraftName = aircraft.AircraftName;
+            plane.AircraftReleaseDate = aircraft.AircraftReleaseDate;
+            plane.AircraftTypeId = aircraft.AircraftTypeId;
+            plane.ExploitationTimeSpan = aircraft.ExploitationTimeSpan;
         }
 
-        public void AddAircraft(int id, string name, int typeId, DateTime releaseTime, TimeSpan expl)
-        {
-            Seeds.Aircraft.Add(new Aircraft()
-            {
-                Id = id,
-                AircraftName = name,
-                AircraftTypeId = typeId,
-                AircraftReleaseDate = releaseTime,
-                ExploitationTimeSpan = expl
-            });
-        }
+        public void RemoveAircraft(int id) => DataSeends.Aircraft.Remove(IsAircraft(id));
 
-        public void UpdateAircraft()
-        {
-
-        }
-
-        public void RemoveAircraft(int id)
-        {
-            Seeds.Aircraft.Remove(Seeds.Aircraft.FirstOrDefault(a => a.Id == id));
-        }
-
-        public void RemoveAircrafts()
-        {
-            Seeds.Aircraft.Clear();
-        }
+        public void RemoveAircrafts() => DataSeends.Aircraft.Clear();
     }
 }

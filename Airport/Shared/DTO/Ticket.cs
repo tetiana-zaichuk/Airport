@@ -1,4 +1,4 @@
-﻿namespace PresentationLayer.Model
+﻿namespace Shared.DTO
 {
     public class Ticket
     {

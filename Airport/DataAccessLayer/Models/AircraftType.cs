@@ -1,4 +1,4 @@
-﻿namespace PresentationLayer.Model
+﻿namespace DataAccessLayer.Models
 {
     public class AircraftType
     {

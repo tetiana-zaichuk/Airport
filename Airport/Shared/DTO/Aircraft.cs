@@ -1,7 +1,6 @@
 ﻿using System;
-using Airport.Model;
 
-namespace PresentationLayer.Model
+namespace Shared.DTO
 {
     public class Aircraft
     {

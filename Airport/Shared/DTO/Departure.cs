@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Airport.Model
+namespace Shared.DTO
 {
     public class Departure
     {

@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using Airport.Model;
 
-namespace PresentationLayer.Model
+namespace Shared.DTO
 {
-    public class Сrew
+    public class Crew
     {
         public int Id { get; set; }
         public int PilotId { get; set; }
