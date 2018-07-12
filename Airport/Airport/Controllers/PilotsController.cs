@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using BusinessLayer.Interfaces;
@@ -31,18 +32,28 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         public ObjectResult PostPilot([FromBody]Pilot pilot)
         {
+            if (pilot == null)
+                return BadRequest("Enter correct entity");
+            if (pilot.Id != 0)
+                return BadRequest("You can`t enter the id");
+            pilot.Id = Services.GetAll().Count + 1;
             Services.Add(pilot);
             return Ok(pilot);
         }
 
         // PUT api/Pilots/5
         [HttpPut("{id}")]
-        public HttpResponseMessage PutPilot(int id, [FromBody]Pilot pilot)
+        public ObjectResult PutPilot(int id, [FromBody]Pilot pilot)
         {
-            if (Services.IsExist(id) == null)
-                return new HttpResponseMessage(HttpStatusCode.NotFound);
+            if (pilot == null || Services.IsExist(id) == null)
+                return NotFound("Entity with id = " + id + " not found");
+            if (pilot.Id != id)
+            {
+                if (pilot.Id == 0) pilot.Id = id;
+                else return BadRequest("You can`t change the id");
+            }
             Services.Update(pilot);
-            return new HttpResponseMessage(HttpStatusCode.OK);
+            return Ok(pilot);
         }
 
         // DELETE api/Pilots/5

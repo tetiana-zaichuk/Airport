@@ -30,6 +30,11 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         public ObjectResult PostAircraftType([FromBody]AircraftType aircraftType)
         {
+            if (aircraftType == null)
+                return BadRequest("Enter correct entity");
+            if (aircraftType.Id != 0)
+                return BadRequest("You can`t enter the id");
+            aircraftType.Id = Services.GetAll().Count + 1;
             Services.Add(aircraftType);
             return Ok(aircraftType);
         }
@@ -38,7 +43,13 @@ namespace PresentationLayer.Controllers
         [HttpPut("{id}")]
         public ObjectResult PutAircraftType(int id, [FromBody]AircraftType aircraftType)
         {
-            if ( Services.IsExist(id)== null) return BadRequest("AircraftType with id = " + id + " not found");
+            if (aircraftType == null || Services.IsExist(id) == null)
+                return NotFound("Entity with id = " + id + " not found");
+            if (aircraftType.Id != id)
+            {
+                if (aircraftType.Id == 0) aircraftType.Id = id;
+                else return BadRequest("You can`t change the id");
+            }
             Services.Update(aircraftType);
             return Ok(aircraftType);
         }

@@ -31,18 +31,28 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         public ObjectResult PostTicket([FromBody]Ticket ticket)
         {
+            if (ticket == null)
+                return BadRequest("Enter correct entity");
+            if (ticket.Id != 0)
+                return BadRequest("You can`t enter the id");
+            ticket.Id = Services.GetAll().Count + 1;
             Services.Add(ticket);
             return Ok(ticket);
         }
 
         // PUT api/Tickets/5
         [HttpPut("{id}")]
-        public HttpResponseMessage PutTicket(int id, [FromBody]Ticket ticket)
+        public ObjectResult PutTicket(int id, [FromBody]Ticket ticket)
         {
-            if (Services.IsExist(id) == null)
-                return new HttpResponseMessage(HttpStatusCode.NotFound);
+            if (ticket == null || Services.IsExist(id) == null)
+                return NotFound("Entity with id = " + id + " not found");
+            if (ticket.Id != id)
+            {
+                if (ticket.Id == 0) ticket.Id = id;
+                else return BadRequest("You can`t change the id");
+            }
             Services.Update(ticket);
-            return new HttpResponseMessage(HttpStatusCode.OK);
+            return Ok(ticket);
         }
 
         // DELETE api/Tickets/5

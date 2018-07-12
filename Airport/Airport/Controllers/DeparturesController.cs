@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using BusinessLayer.Interfaces;
@@ -31,18 +32,32 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         public ObjectResult PostDeparture([FromBody]Departure departure)
         {
+            if (departure == null)
+                return BadRequest("Enter correct entity");
+            if (DateTime.Compare(departure.DepartureDate, DateTime.UtcNow) < 0)
+                return BadRequest("Wrong departure date");
+            if (departure.Id != 0)
+                return BadRequest("You can`t enter the id");
+            departure.Id = Services.GetAll().Count+1;
             Services.Add(departure);
             return Ok(departure);
         }
 
         // PUT api/Departures/5
         [HttpPut("{id}")]
-        public HttpResponseMessage PutDeparture(int id, [FromBody]Departure departure)
+        public ObjectResult PutDeparture(int id, [FromBody]Departure departure)
         {
-            if (Services.IsExist(id) == null)
-                return new HttpResponseMessage(HttpStatusCode.NotFound);
+            if (departure==null || Services.IsExist(id) == null)
+                return NotFound("Entity with id = " + id + " not found");
+            if (DateTime.Compare(departure.DepartureDate, DateTime.UtcNow) < 0)
+                return BadRequest("Wrong departure date");
+            if (departure.Id != id)
+            {
+                if (departure.Id==0) departure.Id = id;
+                else return BadRequest("You can`t change the id");
+            }
             Services.Update(departure);
-            return new HttpResponseMessage(HttpStatusCode.OK);
+            return Ok(departure);
         }
 
         // DELETE api/Departures/5

@@ -23,15 +23,6 @@ namespace PresentationLayer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddScoped<AircraftService>();
-            services.AddScoped<AircraftTypeService>();
-            services.AddScoped<CrewService>();
-            services.AddScoped<DepartureService>();
-            services.AddScoped<FlightService>();
-            services.AddScoped<PilotService>();
-            services.AddScoped<StewardessService>();
-            services.AddScoped<TicketService>();
-
             services.AddScoped<DataSeends>();
             services.AddScoped<IRepository<Aircraft>, Repository<Aircraft>>();
             services.AddScoped<IRepository<AircraftType>, Repository<AircraftType>>();

@@ -30,18 +30,28 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         public ObjectResult PostCrew([FromBody]Crew crew)
         {
+            if (crew == null)
+                return BadRequest("Enter correct entity");
+            if (crew.Id != 0)
+                return BadRequest("You can`t enter the id");
+            crew.Id = Services.GetAll().Count + 1;
             Services.Add(crew);
             return Ok(crew);
         }
 
         // PUT api/Crew/5
         [HttpPut("{id}")]
-        public HttpResponseMessage PutCrew(int id, [FromBody]Crew crew)
+        public ObjectResult PutCrew(int id, [FromBody]Crew crew)
         {
-            if (Services.IsExist(id) == null)
-                return new HttpResponseMessage(HttpStatusCode.NotFound);
+            if (crew == null || Services.IsExist(id) == null)
+                return NotFound("Entity with id = " + id + " not found");
+            if (crew.Id != id)
+            {
+                if (crew.Id == 0) crew.Id = id;
+                else return BadRequest("You can`t change the id");
+            }
             Services.Update(crew);
-            return new HttpResponseMessage(HttpStatusCode.OK);
+            return Ok(crew);
         }
 
         // DELETE api/Crew/5

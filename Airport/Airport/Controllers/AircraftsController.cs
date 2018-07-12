@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using BusinessLayer.Interfaces;
@@ -22,7 +23,8 @@ namespace PresentationLayer.Controllers
         [HttpGet("{id}")]
         public ObjectResult GetAircraftDetails(int id)
         {
-            if (Services.IsExist(id) == null) return NotFound("Aircraft with id = " + id + " not found");
+            if (Services.IsExist(id) == null)
+                return NotFound("Aircraft with id = " + id + " not found");
             return Ok(Services.GetDetails(id));
         }
 
@@ -30,24 +32,40 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         public ObjectResult PostAircraft([FromBody]Aircraft aircraft)
         {
+            if (aircraft == null)
+                return BadRequest("Enter correct entity");
+            if (DateTime.Compare(aircraft.AircraftReleaseDate, DateTime.UtcNow) >= 0)
+                return BadRequest("Wrong release date");
+            if (aircraft.Id != 0)
+                return BadRequest("You can`t enter the id");
+            aircraft.Id = Services.GetAll().Count + 1;
             Services.Add(aircraft);
             return Ok(aircraft);
         }
 
         // PUT api/Aircrafts/5
         [HttpPut("{id}")]
-        public HttpResponseMessage PutAircraft(int id, [FromBody]Aircraft aircraft)
+        public ObjectResult PutAircraft(int id, [FromBody]Aircraft aircraft)
         {
-            if(Services.IsExist(id) == null) return new HttpResponseMessage(HttpStatusCode.NotFound);
+            if (aircraft == null || Services.IsExist(id) == null)
+                return NotFound("Entity with id = " + id + " not found");
+            if (DateTime.Compare(aircraft.AircraftReleaseDate, DateTime.UtcNow) >= 0)
+                return BadRequest("Wrong release date");
+            if (aircraft.Id != id)
+            {
+                if (aircraft.Id == 0) aircraft.Id = id;
+                else return BadRequest("You can`t change the id");
+            }
             Services.Update(aircraft);
-            return new HttpResponseMessage(HttpStatusCode.OK);
+            return Ok(aircraft);
         }
 
         // DELETE api/Aircrafts/5
         [HttpDelete("{id}")]
         public HttpResponseMessage DeleteAircraft(int id)
         {
-            if (Services.IsExist(id) == null) return new HttpResponseMessage(HttpStatusCode.NotFound);
+            if (Services.IsExist(id) == null)
+                return new HttpResponseMessage(HttpStatusCode.NotFound);
             Services.Remove(id);
             return new HttpResponseMessage(HttpStatusCode.NoContent);
         }

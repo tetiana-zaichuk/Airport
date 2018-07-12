@@ -30,18 +30,28 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         public ObjectResult PostStewardess([FromBody]Stewardess stewardess)
         {
+            if (stewardess == null)
+                return BadRequest("Enter correct entity");
+            if (stewardess.Id != 0)
+                return BadRequest("You can`t enter the id");
+            stewardess.Id = Services.GetAll().Count + 1;
             Services.Add(stewardess);
             return Ok(stewardess);
         }
 
         // PUT api/Stewardesses/5
         [HttpPut("{id}")]
-        public HttpResponseMessage PutStewardess(int id, [FromBody]Stewardess stewardess)
+        public ObjectResult PutStewardess(int id, [FromBody]Stewardess stewardess)
         {
-            if (Services.IsExist(id) == null)
-                return new HttpResponseMessage(HttpStatusCode.NotFound);
+            if (stewardess == null || Services.IsExist(id) == null)
+                return NotFound("Entity with id = " + id + " not found");
+            if (stewardess.Id != id)
+            {
+                if (stewardess.Id == 0) stewardess.Id = id;
+                else return BadRequest("You can`t change the id");
+            }
             Services.Update(stewardess);
-            return new HttpResponseMessage(HttpStatusCode.OK);
+            return Ok(stewardess);
         }
 
         // DELETE api/Stewardesses/5

@@ -1,9 +1,13 @@
-﻿namespace Shared.DTO
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Shared.DTO
 {
     public class Ticket
     {
         public int Id { get; set; }
+        [Required]
         public decimal Price { get; set; }
+        [Required]
         public int FlightId { get; set; }
     }
 }
