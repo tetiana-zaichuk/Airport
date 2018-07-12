@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using BusinessLayer.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using BusinessLayer.Services;
 using Shared.DTO;
 
 namespace PresentationLayer.Controllers
@@ -10,27 +10,27 @@ namespace PresentationLayer.Controllers
     [Route("api/[controller]")]
     public class StewardessesController : Controller
     {
-        private StewardessService Services { get; }
+        private IService<Stewardess> Services { get; }
 
-        public StewardessesController(StewardessService services) => Services = services;
+        public StewardessesController(IService<Stewardess> services) => Services = services;
 
         // GET api/Stewardesses
         [HttpGet]
-        public List<Stewardess> GetAircrafts() => Services.GetStewardesses();
+        public List<Stewardess> GetAircrafts() => Services.GetAll();
 
         // GET api/Stewardesses/5
         [HttpGet("{id}")]
         public ObjectResult GetAircraftDetails(int id)
         {
-            if (Services.IsStewardess(id) == null) return NotFound("Aircraft with id = " + id + "not found");
-            return Ok(Services.GetStewardessDetails(id));
+            if (Services.IsExist(id) == null) return NotFound("Aircraft with id = " + id + " not found");
+            return Ok(Services.GetDetails(id));
         }
 
         // POST api/Stewardesses
         [HttpPost]
         public ObjectResult PostStewardess([FromBody]Stewardess stewardess)
         {
-            Services.AddStewardess(stewardess);
+            Services.Add(stewardess);
             return Ok(stewardess);
         }
 
@@ -38,9 +38,9 @@ namespace PresentationLayer.Controllers
         [HttpPut("{id}")]
         public HttpResponseMessage PutStewardess(int id, [FromBody]Stewardess stewardess)
         {
-            if (Services.IsStewardess(id) == null)
+            if (Services.IsExist(id) == null)
                 return new HttpResponseMessage(HttpStatusCode.NotFound);
-            Services.UpdateStewardess(stewardess);
+            Services.Update(stewardess);
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
@@ -48,8 +48,8 @@ namespace PresentationLayer.Controllers
         [HttpDelete("{id}")]
         public HttpResponseMessage DeleteStewardess(int id)
         {
-            if (Services.IsStewardess(id) == null) return new HttpResponseMessage(HttpStatusCode.NotFound);
-            Services.RemoveStewardess(id);
+            if (Services.IsExist(id) == null) return new HttpResponseMessage(HttpStatusCode.NotFound);
+            Services.Remove(id);
             return new HttpResponseMessage(HttpStatusCode.NoContent);
         }
 
@@ -57,7 +57,7 @@ namespace PresentationLayer.Controllers
         [HttpDelete]
         public HttpResponseMessage DeleteStewardesses()
         {
-            Services.RemoveStewardesses();
+            Services.RemoveAll();
             return new HttpResponseMessage(HttpStatusCode.NoContent);
         }
     }

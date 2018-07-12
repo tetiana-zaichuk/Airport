@@ -2,9 +2,8 @@
 
 namespace DataAccessLayer.Models
 {
-    public class Departure
+    public class Departure: Entity
     {
-        public int Id { get; set; }
         public int FlightId { get; set; }
         public DateTime DepartureDate { get; set; }
         public int CrewId { get; set; }

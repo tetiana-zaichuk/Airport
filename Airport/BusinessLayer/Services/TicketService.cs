@@ -1,34 +1,36 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using BusinessLayer.Interfaces;
 using DataAccessLayer;
 using Shared.DTO;
 
 namespace BusinessLayer.Services
 {
-    public class TicketService
+    public class TicketService : IService<Ticket>
     {
-        public DataAccessLayer.Models.Ticket IsTicket(int id)
-            => DataSeends.Tickets.FirstOrDefault(a => a.Id == id);
+        private readonly IRepository<DataAccessLayer.Models.Ticket> _repository;
 
-        public List<Ticket> GetTicket()
-            => Mapper.Map<List<DataAccessLayer.Models.Ticket>, List<Ticket>>(DataSeends.Tickets);
+        public TicketService(IRepository<DataAccessLayer.Models.Ticket> repository)
+            => _repository = repository;
 
-        public Ticket GetTicketDetails(int id)
-            => Mapper.Map<DataAccessLayer.Models.Ticket, Ticket>(IsTicket(id));
+        public Ticket IsExist(int id)
+            => Mapper.Map<DataAccessLayer.Models.Ticket, Ticket>(_repository.Get(id).FirstOrDefault());
 
-        public void AddTicket(Ticket ticket)
-            => DataSeends.Tickets.Add(Mapper.Map<Ticket, DataAccessLayer.Models.Ticket>(ticket));
+        public DataAccessLayer.Models.Ticket ConvertToModel(Ticket ticket)
+            => Mapper.Map<Ticket, DataAccessLayer.Models.Ticket>(ticket);
 
-        public void UpdateTicket(Ticket ticket)
-        {
-            var t = IsTicket(ticket.Id);
-            t.FlightId = ticket.FlightId;
-            t.Price = ticket.Price;
-        }
+        public List<Ticket> GetAll()
+            => Mapper.Map<List<DataAccessLayer.Models.Ticket>, List<Ticket>>(_repository.Get());
 
-        public void RemoveTicket(int id) => DataSeends.Tickets.Remove(IsTicket(id));
+        public Ticket GetDetails(int id) => IsExist(id);
 
-        public void RemoveTickets() => DataSeends.Tickets.Clear();
+        public void Add(Ticket ticket) => _repository.Create(ConvertToModel(ticket));
+
+        public void Update(Ticket ticket) => _repository.Update(ConvertToModel(ticket));
+
+        public void Remove(int id) => _repository.Delete(id);
+
+        public void RemoveAll() => _repository.Delete();
     }
 }

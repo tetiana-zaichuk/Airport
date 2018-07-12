@@ -1,36 +1,36 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using BusinessLayer.Interfaces;
 using DataAccessLayer;
 using Shared.DTO;
 
 namespace BusinessLayer.Services
 {
-    public class PilotService
+    public class PilotService : IService<Pilot>
     {
-        public DataAccessLayer.Models.Pilot IsPilot(int id)
-            => DataSeends.Pilots.FirstOrDefault(a => a.Id == id);
+        private readonly IRepository<DataAccessLayer.Models.Pilot> _repository;
 
-        public List<Pilot> GetPilots()
-            => Mapper.Map<List<DataAccessLayer.Models.Pilot>, List<Pilot>>(DataSeends.Pilots);
+        public PilotService(IRepository<DataAccessLayer.Models.Pilot> repository)
+            => _repository = repository;
 
-        public Pilot GetPilotDetails(int id)
-            => Mapper.Map<DataAccessLayer.Models.Pilot, Pilot>(IsPilot(id));
+        public Pilot IsExist(int id)
+            => Mapper.Map<DataAccessLayer.Models.Pilot, Pilot>(_repository.Get(id).FirstOrDefault());
 
-        public void AddPilot(Pilot pilot)
-            => DataSeends.Pilots.Add(Mapper.Map<Pilot, DataAccessLayer.Models.Pilot>(pilot));
+        public DataAccessLayer.Models.Pilot ConvertToModel(Pilot pilot)
+            => Mapper.Map<Pilot, DataAccessLayer.Models.Pilot>(pilot);
 
-        public void UpdatePilot(Pilot pilot)
-        {
-            var p = IsPilot(pilot.Id);
-            p.FirstName = pilot.FirstName;
-            p.LastName = pilot.LastName;
-            p.Dob = pilot.Dob;
-            p.Experience = pilot.Experience;
-        }
+        public List<Pilot> GetAll()
+            => Mapper.Map<List<DataAccessLayer.Models.Pilot>, List<Pilot>>(_repository.Get());
 
-        public void RemovePilot(int id) => DataSeends.Pilots.Remove(IsPilot(id));
+        public Pilot GetDetails(int id) => IsExist(id);
 
-        public void RemovePilots() => DataSeends.Pilots.Clear();
+        public void Add(Pilot pilot) => _repository.Create(ConvertToModel(pilot));
+
+        public void Update(Pilot pilot) => _repository.Update(ConvertToModel(pilot));
+
+        public void Remove(int id) => _repository.Delete(id);
+
+        public void RemoveAll() => _repository.Delete();
     }
 }

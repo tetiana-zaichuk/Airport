@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using BusinessLayer.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using BusinessLayer.Services;
 using Shared.DTO;
@@ -10,27 +11,27 @@ namespace PresentationLayer.Controllers
     [Route("api/[controller]")]
     public class DeparturesController : Controller
     {
-        private DepartureService Services { get; }
+        private IService<Departure> Services { get; }
 
-        public DeparturesController(DepartureService services) => Services = services;
+        public DeparturesController(IService<Departure> services) => Services = services;
 
         // GET api/Departures
         [HttpGet]
-        public List<Departure> GetDepartures() => Services.GetDeparture();
+        public List<Departure> GetDepartures() => Services.GetAll();
 
         // GET api/Departures/5
         [HttpGet("{id}")]
         public ObjectResult GetDepartureDetails(int id)
         {
-            if (Services.IsDeparture(id) == null) return NotFound("Departure with id = " + id + "not found");
-            return Ok(Services.GetDepartureDetails(id));
+            if (Services.IsExist(id) == null) return NotFound("Departure with id = " + id + " not found");
+            return Ok(Services.GetDetails(id));
         }
 
         // POST api/Departures
         [HttpPost]
         public ObjectResult PostDeparture([FromBody]Departure departure)
         {
-            Services.AddDeparture(departure);
+            Services.Add(departure);
             return Ok(departure);
         }
 
@@ -38,9 +39,9 @@ namespace PresentationLayer.Controllers
         [HttpPut("{id}")]
         public HttpResponseMessage PutDeparture(int id, [FromBody]Departure departure)
         {
-            if (Services.IsDeparture(id) == null)
+            if (Services.IsExist(id) == null)
                 return new HttpResponseMessage(HttpStatusCode.NotFound);
-            Services.UpdateDeparture(departure);
+            Services.Update(departure);
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
@@ -48,8 +49,8 @@ namespace PresentationLayer.Controllers
         [HttpDelete("{id}")]
         public HttpResponseMessage DeleteDeparture(int id)
         {
-            if (Services.IsDeparture(id) == null) return new HttpResponseMessage(HttpStatusCode.NotFound);
-            Services.RemoveDeparture(id);
+            if (Services.IsExist(id) == null) return new HttpResponseMessage(HttpStatusCode.NotFound);
+            Services.Remove(id);
             return new HttpResponseMessage(HttpStatusCode.NoContent);
         }
 
@@ -57,7 +58,7 @@ namespace PresentationLayer.Controllers
         [HttpDelete]
         public HttpResponseMessage DeleteDepartures()
         {
-            Services.RemoveDepartures();
+            Services.RemoveAll();
             return new HttpResponseMessage(HttpStatusCode.NoContent);
         }
     }

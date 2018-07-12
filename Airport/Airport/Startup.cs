@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using BusinessLayer.Interfaces;
 using BusinessLayer.Services;
+using DataAccessLayer;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,6 +31,24 @@ namespace PresentationLayer
             services.AddScoped<PilotService>();
             services.AddScoped<StewardessService>();
             services.AddScoped<TicketService>();
+
+            services.AddScoped<DataSeends>();
+            services.AddScoped<IRepository<Aircraft>, Repository<Aircraft>>();
+            services.AddScoped<IRepository<AircraftType>, Repository<AircraftType>>();
+            services.AddScoped<IRepository<Crew>, Repository<Crew>>();
+            services.AddScoped<IRepository<Departure>, Repository<Departure>>();
+            services.AddScoped<IRepository<Flight>, Repository<Flight>>();
+            services.AddScoped<IRepository<Pilot>, Repository<Pilot>>();
+            services.AddScoped<IRepository<Stewardess>, Repository<Stewardess>>();
+            services.AddScoped<IRepository<Ticket>, Repository<Ticket>>();
+            services.AddScoped<IService<Shared.DTO.Aircraft>, AircraftService>();
+            services.AddScoped<IService<Shared.DTO.AircraftType>, AircraftTypeService>();
+            services.AddScoped<IService<Shared.DTO.Crew>, CrewService>();
+            services.AddScoped<IService<Shared.DTO.Departure>, DepartureService>();
+            services.AddScoped<IService<Shared.DTO.Flight>, FlightService>();
+            services.AddScoped<IService<Shared.DTO.Pilot>, PilotService>();
+            services.AddScoped<IService<Shared.DTO.Stewardess>, StewardessService>();
+            services.AddScoped<IService<Shared.DTO.Ticket>, TicketService>();
 
             Mapper.Initialize(cfg =>
             {

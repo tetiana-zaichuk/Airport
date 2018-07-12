@@ -1,37 +1,36 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using BusinessLayer.Interfaces;
 using DataAccessLayer;
 using Shared.DTO;
 
 namespace BusinessLayer.Services
 {
-    public class FlightService
+    public class FlightService : IService<Flight>
     {
-        public DataAccessLayer.Models.Flight IsFlight(int id)
-            => DataSeends.Flights.FirstOrDefault(a => a.Id == id);
+        private readonly IRepository<DataAccessLayer.Models.Flight> _repository;
 
-        public List<Flight> GetFlight()
-            => Mapper.Map<List<DataAccessLayer.Models.Flight>, List<Flight>>(DataSeends.Flights);
+        public FlightService(IRepository<DataAccessLayer.Models.Flight> repository)
+            => _repository = repository;
 
-        public Flight GetFlightDetails(int id)
-            => Mapper.Map<DataAccessLayer.Models.Flight, Flight>(IsFlight(id));
+        public Flight IsExist(int id)
+            => Mapper.Map<DataAccessLayer.Models.Flight, Flight>(_repository.Get(id).FirstOrDefault());
 
-        public void AddFlight(Flight flight)
-            => DataSeends.Flights.Add(Mapper.Map<Flight, DataAccessLayer.Models.Flight>(flight));
+        public DataAccessLayer.Models.Flight ConvertToModel(Flight flight)
+            => Mapper.Map<Flight, DataAccessLayer.Models.Flight>(flight);
 
-        public void UpdateFlight(Flight flight)
-        {
-            var fl = IsFlight(flight.Id);
-            fl.Departure = flight.Departure;
-            fl.DepartureTime = flight.DepartureTime;
-            fl.Destination = flight.Destination;
-            fl.ArrivalTime = flight.ArrivalTime;
-            fl.Tickets = Mapper.Map<List<Ticket>, List<DataAccessLayer.Models.Ticket>>(flight.Tickets);
-        }
+        public List<Flight> GetAll()
+            => Mapper.Map<List<DataAccessLayer.Models.Flight>, List<Flight>>(_repository.Get());
 
-        public void RemoveFlight(int id) => DataSeends.Flights.Remove(IsFlight(id));
+        public Flight GetDetails(int id) => IsExist(id);
 
-        public void RemoveFlights() => DataSeends.Flights.Clear();
+        public void Add(Flight flight) => _repository.Create(ConvertToModel(flight));
+
+        public void Update(Flight flight) => _repository.Update(ConvertToModel(flight));
+
+        public void Remove(int id) => _repository.Delete(id);
+
+        public void RemoveAll() => _repository.Delete();
     }
 }

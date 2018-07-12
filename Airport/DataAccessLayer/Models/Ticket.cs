@@ -1,8 +1,7 @@
 ﻿namespace DataAccessLayer.Models
 {
-    public class Ticket
+    public class Ticket : Entity
     {
-        public int Id { get; set; }
         public decimal Price { get; set; }
         public int FlightId { get; set; }
     }

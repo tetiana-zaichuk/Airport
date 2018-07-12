@@ -1,35 +1,36 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using BusinessLayer.Interfaces;
 using DataAccessLayer;
 using Shared.DTO;
 
 namespace BusinessLayer.Services
 {
-    public class StewardessService
+    public class StewardessService : IService<Stewardess>
     {
-        public DataAccessLayer.Models.Stewardess IsStewardess(int id)
-            => DataSeends.Stewardesses.FirstOrDefault(a => a.Id == id);
+        private readonly IRepository<DataAccessLayer.Models.Stewardess> _repository;
 
-        public List<Stewardess> GetStewardesses()
-            => Mapper.Map<List<DataAccessLayer.Models.Stewardess>, List<Stewardess>>(DataSeends.Stewardesses);
+        public StewardessService(IRepository<DataAccessLayer.Models.Stewardess> repository)
+            => _repository = repository;
 
-        public Stewardess GetStewardessDetails(int id)
-            => Mapper.Map<DataAccessLayer.Models.Stewardess, Stewardess>(IsStewardess(id));
+        public Stewardess IsExist(int id)
+            => Mapper.Map<DataAccessLayer.Models.Stewardess, Stewardess>(_repository.Get(id).FirstOrDefault());
 
-        public void AddStewardess(Stewardess stewardess)
-            => DataSeends.Stewardesses.Add(Mapper.Map<Stewardess, DataAccessLayer.Models.Stewardess>(stewardess));
+        public DataAccessLayer.Models.Stewardess ConvertToModel(Stewardess stewardess)
+            => Mapper.Map<Stewardess, DataAccessLayer.Models.Stewardess>(stewardess);
 
-        public void UpdateStewardess(Stewardess stewardess)
-        {
-            var st = IsStewardess(stewardess.Id);
-            st.FirstName = stewardess.FirstName;
-            st.LastName = stewardess.LastName;
-            st.Dob = stewardess.Dob;
-        }
+        public List<Stewardess> GetAll()
+            => Mapper.Map<List<DataAccessLayer.Models.Stewardess>, List<Stewardess>>(_repository.Get());
 
-        public void RemoveStewardess(int id) => DataSeends.Stewardesses.Remove(IsStewardess(id));
+        public Stewardess GetDetails(int id) => IsExist(id);
 
-        public void RemoveStewardesses() => DataSeends.Stewardesses.Clear();
+        public void Add(Stewardess stewardess) => _repository.Create(ConvertToModel(stewardess));
+
+        public void Update(Stewardess stewardess) => _repository.Update(ConvertToModel(stewardess));
+
+        public void Remove(int id) => _repository.Delete(id);
+
+        public void RemoveAll() => _repository.Delete();
     }
 }

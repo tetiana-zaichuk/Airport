@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using BusinessLayer.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using BusinessLayer.Services;
 using Shared.DTO;
 
 namespace PresentationLayer.Controllers
@@ -10,27 +10,27 @@ namespace PresentationLayer.Controllers
     [Route("api/[controller]")]
     public class AircraftsController : Controller
     {
-        private AircraftService Services { get; }
+        private IService<Aircraft> Services { get; }
 
-        public AircraftsController(AircraftService services) => Services = services;
+        public AircraftsController(IService<Aircraft> services) => Services = services;
 
         // GET api/Aircrafts
         [HttpGet]
-        public List<Aircraft> GetAircrafts() => Services.GetAircraft();
+        public List<Aircraft> GetAircrafts() => Services.GetAll();
 
         // GET api/Aircrafts/5
         [HttpGet("{id}")]
         public ObjectResult GetAircraftDetails(int id)
         {
-            if (Services.IsAircraft(id) == null) return NotFound("Aircraft with id = " + id + "not found");
-            return Ok(Services.GetAircraftDetails(id));
+            if (Services.IsExist(id) == null) return NotFound("Aircraft with id = " + id + " not found");
+            return Ok(Services.GetDetails(id));
         }
 
         // POST api/Aircrafts
         [HttpPost]
         public ObjectResult PostAircraft([FromBody]Aircraft aircraft)
         {
-            Services.AddAircraft(aircraft);
+            Services.Add(aircraft);
             return Ok(aircraft);
         }
 
@@ -38,8 +38,8 @@ namespace PresentationLayer.Controllers
         [HttpPut("{id}")]
         public HttpResponseMessage PutAircraft(int id, [FromBody]Aircraft aircraft)
         {
-            if (Services.IsAircraft(id) == null) return new HttpResponseMessage(HttpStatusCode.NotFound);
-            Services.UpdateAircraft(aircraft);
+            if(Services.IsExist(id) == null) return new HttpResponseMessage(HttpStatusCode.NotFound);
+            Services.Update(aircraft);
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
@@ -47,8 +47,8 @@ namespace PresentationLayer.Controllers
         [HttpDelete("{id}")]
         public HttpResponseMessage DeleteAircraft(int id)
         {
-            if (Services.IsAircraft(id) == null) return new HttpResponseMessage(HttpStatusCode.NotFound);
-            Services.RemoveAircraft(id);
+            if (Services.IsExist(id) == null) return new HttpResponseMessage(HttpStatusCode.NotFound);
+            Services.Remove(id);
             return new HttpResponseMessage(HttpStatusCode.NoContent);
         }
         
@@ -56,7 +56,7 @@ namespace PresentationLayer.Controllers
         [HttpDelete]
         public HttpResponseMessage DeleteAircrafts()
         {
-            Services.RemoveAircrafts();
+            Services.RemoveAll();
             return new HttpResponseMessage(HttpStatusCode.NoContent);
         }
     }

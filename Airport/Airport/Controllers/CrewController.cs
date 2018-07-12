@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using BusinessLayer.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using BusinessLayer.Services;
 using Shared.DTO;
 
 namespace PresentationLayer.Controllers
@@ -10,27 +10,27 @@ namespace PresentationLayer.Controllers
     [Route("api/[controller]")]
     public class CrewController : Controller
     {
-        private CrewService Services { get; }
+        private IService<Crew> Services { get; }
 
-        public CrewController(CrewService services) => Services = services;
+        public CrewController(IService<Crew> services) => Services = services;
 
         // GET api/Crew
         [HttpGet]
-        public List<Crew> GetCrews() => Services.GetCrew();
+        public List<Crew> GetCrews() => Services.GetAll();
 
         // GET api/Crew/5
         [HttpGet("{id}")]
         public ObjectResult GetCrewDetails(int id)
         {
-            if (Services.IsCrew(id) == null) return NotFound("Crew with id = " + id + "not found");
-            return Ok(Services.GetCrewDetails(id));
+            if (Services.IsExist(id) == null) return NotFound("Crew with id = " + id + " not found");
+            return Ok(Services.GetDetails(id));
         }
 
         // POST api/Crew
         [HttpPost]
         public ObjectResult PostCrew([FromBody]Crew crew)
         {
-            Services.AddCrew(crew);
+            Services.Add(crew);
             return Ok(crew);
         }
 
@@ -38,9 +38,9 @@ namespace PresentationLayer.Controllers
         [HttpPut("{id}")]
         public HttpResponseMessage PutCrew(int id, [FromBody]Crew crew)
         {
-            if (Services.IsCrew(id) == null)
+            if (Services.IsExist(id) == null)
                 return new HttpResponseMessage(HttpStatusCode.NotFound);
-            Services.UpdateCrew(crew);
+            Services.Update(crew);
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
@@ -48,8 +48,8 @@ namespace PresentationLayer.Controllers
         [HttpDelete("{id}")]
         public HttpResponseMessage DeleteCrew(int id)
         {
-            if (Services.IsCrew(id) == null) return new HttpResponseMessage(HttpStatusCode.NotFound);
-            Services.RemoveCrew(id);
+            if (Services.IsExist(id) == null) return new HttpResponseMessage(HttpStatusCode.NotFound);
+            Services.Remove(id);
             return new HttpResponseMessage(HttpStatusCode.NoContent);
         }
 
@@ -57,7 +57,7 @@ namespace PresentationLayer.Controllers
         [HttpDelete]
         public HttpResponseMessage DeleteCrews()
         {
-            Services.RemoveCrews();
+            Services.RemoveAll();
             return new HttpResponseMessage(HttpStatusCode.NoContent);
         }
     }

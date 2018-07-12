@@ -1,36 +1,36 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using BusinessLayer.Interfaces;
 using DataAccessLayer;
 using Shared.DTO;
 
 namespace BusinessLayer.Services
 {
-    public class DepartureService
+    public class DepartureService : IService<Departure>
     {
-        public DataAccessLayer.Models.Departure IsDeparture(int id)
-            => DataSeends.Departures.FirstOrDefault(a => a.Id == id);
+        private readonly IRepository<DataAccessLayer.Models.Departure> _repository;
 
-        public List<Departure> GetDeparture()
-            => Mapper.Map<List<DataAccessLayer.Models.Departure>, List<Departure>>(DataSeends.Departures);
+        public DepartureService(IRepository<DataAccessLayer.Models.Departure> repository)
+            => _repository = repository;
 
-        public Departure GetDepartureDetails(int id)
-            => Mapper.Map<DataAccessLayer.Models.Departure, Departure>(IsDeparture(id));
+        public Departure IsExist(int id)
+            => Mapper.Map<DataAccessLayer.Models.Departure, Departure>(_repository.Get(id).FirstOrDefault());
 
-        public void AddDeparture(Departure departure)
-            => DataSeends.Departures.Add(Mapper.Map<Departure, DataAccessLayer.Models.Departure>(departure));
+        public DataAccessLayer.Models.Departure ConvertToModel(Departure departure)
+            => Mapper.Map<Departure, DataAccessLayer.Models.Departure>(departure);
 
-        public void UpdateDeparture(Departure departure)
-        {
-            var dep = IsDeparture(departure.Id);
-            dep.FlightId = departure.FlightId;
-            dep.AircraftId = departure.AircraftId;
-            dep.CrewId = departure.CrewId;
-            dep.DepartureDate = departure.DepartureDate;
-        }
+        public List<Departure> GetAll()
+            => Mapper.Map<List<DataAccessLayer.Models.Departure>, List<Departure>>(_repository.Get());
 
-        public void RemoveDeparture(int id) => DataSeends.Departures.Remove(IsDeparture(id));
+        public Departure GetDetails(int id) => IsExist(id);
 
-        public void RemoveDepartures() => DataSeends.Departures.Clear();
+        public void Add(Departure departure) => _repository.Create(ConvertToModel(departure));
+
+        public void Update(Departure departure) => _repository.Update(ConvertToModel(departure));
+
+        public void Remove(int id) => _repository.Delete(id);
+
+        public void RemoveAll() => _repository.Delete();
     }
 }

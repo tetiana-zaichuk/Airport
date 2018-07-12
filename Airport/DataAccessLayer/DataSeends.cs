@@ -5,7 +5,7 @@ using DataAccessLayer.Models;
 
 namespace DataAccessLayer
 {
-    public static class DataSeends
+    public class DataSeends
     {
         public static List<Aircraft> Aircraft = new List<Aircraft>()
             { new Aircraft(){Id = 1, AircraftName = "Strong", AircraftTypeId = 1, AircraftReleaseDate = new DateTime(2011, 6, 10),
@@ -64,5 +64,45 @@ namespace DataAccessLayer
             new Crew(){Id = 1, PilotId = 1,Stewardesses = Stewardesses.Where(t=>t.FirstName=="Anna").ToList()},
             new Crew(){Id = 2, PilotId = 2,Stewardesses = Stewardesses.Where(t=>t.FirstName=="Eva").ToList()}
         };
+
+        public List<TEntity> Set<TEntity>()
+        {
+            if (Aircraft is List<TEntity>)
+            {
+                return Aircraft as List<TEntity>;
+            }
+            else if (AircraftTypes is List<TEntity>)
+            {
+                return AircraftTypes as List<TEntity>;
+            }
+            else if (Tickets is List<TEntity>)
+            {
+                return Tickets as List<TEntity>;
+            }
+            else if (Flights is List<TEntity>)
+            {
+                return Flights as List<TEntity>;
+            }
+            else if (Departures is List<TEntity>)
+            {
+                return Departures as List<TEntity>;
+            }
+            else if (Pilots is List<TEntity>)
+            {
+                return Pilots as List<TEntity>;
+            }
+            else if (Stewardesses is List<TEntity>)
+            {
+                return Stewardesses as List<TEntity>;
+            }
+            else if (Crews is List<TEntity>)
+            {
+                return Crews as List<TEntity>;
+            }
+            else
+            {
+                throw new Exception("Something happened");
+            }
+        }
     }
 }

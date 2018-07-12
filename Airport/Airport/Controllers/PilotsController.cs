@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using BusinessLayer.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using BusinessLayer.Services;
 using Shared.DTO;
@@ -10,27 +11,27 @@ namespace PresentationLayer.Controllers
     [Route("api/[controller]")]
     public class PilotsController : Controller
     {
-        private PilotService Services { get; }
+        private IService<Pilot> Services { get; }
 
-        public PilotsController(PilotService services) => Services = services;
+        public PilotsController(IService<Pilot> services) => Services = services;
 
         // GET api/Pilots
         [HttpGet]
-        public List<Pilot> GetPilots() => Services.GetPilots();
+        public List<Pilot> GetPilots() => Services.GetAll();
 
         // GET api/Pilots/5
         [HttpGet("{id}")]
         public ObjectResult GetPilotDetails(int id)
         {
-            if (Services.IsPilot(id) == null) return NotFound("Aircraft with id = " + id + "not found");
-            return Ok(Services.GetPilotDetails(id));
+            if (Services.IsExist(id) == null) return NotFound("Aircraft with id = " + id + " not found");
+            return Ok(Services.GetDetails(id));
         }
 
         // POST api/Pilots
         [HttpPost]
         public ObjectResult PostPilot([FromBody]Pilot pilot)
         {
-            Services.AddPilot(pilot);
+            Services.Add(pilot);
             return Ok(pilot);
         }
 
@@ -38,9 +39,9 @@ namespace PresentationLayer.Controllers
         [HttpPut("{id}")]
         public HttpResponseMessage PutPilot(int id, [FromBody]Pilot pilot)
         {
-            if (Services.IsPilot(id) == null)
+            if (Services.IsExist(id) == null)
                 return new HttpResponseMessage(HttpStatusCode.NotFound);
-            Services.UpdatePilot(pilot);
+            Services.Update(pilot);
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
@@ -48,8 +49,8 @@ namespace PresentationLayer.Controllers
         [HttpDelete("{id}")]
         public HttpResponseMessage DeletePilot(int id)
         {
-            if (Services.IsPilot(id) == null) return new HttpResponseMessage(HttpStatusCode.NotFound);
-            Services.RemovePilot(id);
+            if (Services.IsExist(id) == null) return new HttpResponseMessage(HttpStatusCode.NotFound);
+            Services.Remove(id);
             return new HttpResponseMessage(HttpStatusCode.NoContent);
         }
 
@@ -57,7 +58,7 @@ namespace PresentationLayer.Controllers
         [HttpDelete]
         public HttpResponseMessage DeletePilots()
         {
-            Services.RemovePilots();
+            Services.RemoveAll();
             return new HttpResponseMessage(HttpStatusCode.NoContent);
         }
     }

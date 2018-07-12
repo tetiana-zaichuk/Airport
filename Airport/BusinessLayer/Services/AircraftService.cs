@@ -1,36 +1,36 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using BusinessLayer.Interfaces;
 using DataAccessLayer;
 using Shared.DTO;
 
 namespace BusinessLayer.Services
 {
-    public class AircraftService
+    public class AircraftService : IService<Aircraft>
     {
-        public DataAccessLayer.Models.Aircraft IsAircraft(int id) 
-            => DataSeends.Aircraft.FirstOrDefault(a => a.Id == id);
+        private readonly IRepository<DataAccessLayer.Models.Aircraft> _repository;
 
-        public List<Aircraft> GetAircraft() 
-            => Mapper.Map<List<DataAccessLayer.Models.Aircraft>,List<Aircraft>>(DataSeends.Aircraft);
+        public AircraftService(IRepository<DataAccessLayer.Models.Aircraft> repository)
+            => _repository = repository;
 
-        public Aircraft GetAircraftDetails(int id)
-            => Mapper.Map<DataAccessLayer.Models.Aircraft, Aircraft>(IsAircraft(id));
+        public Aircraft IsExist(int id)
+            => Mapper.Map<DataAccessLayer.Models.Aircraft, Aircraft>(_repository.Get(id).FirstOrDefault());
+
+        public DataAccessLayer.Models.Aircraft ConvertToModel(Aircraft aircraft)
+            => Mapper.Map<Aircraft, DataAccessLayer.Models.Aircraft>(aircraft);
+
+        public List<Aircraft> GetAll()
+            => Mapper.Map<List<DataAccessLayer.Models.Aircraft>, List<Aircraft>>(_repository.Get());
         
-        public void AddAircraft(Aircraft aircraft)
-            => DataSeends.Aircraft.Add(Mapper.Map<Aircraft, DataAccessLayer.Models.Aircraft>(aircraft));
+        public Aircraft GetDetails(int id) => IsExist(id);
         
-        public void UpdateAircraft(Aircraft aircraft)
-        {
-            var plane = IsAircraft(aircraft.Id);
-            plane.AircraftName = aircraft.AircraftName;
-            plane.AircraftReleaseDate = aircraft.AircraftReleaseDate;
-            plane.AircraftTypeId = aircraft.AircraftTypeId;
-            plane.ExploitationTimeSpan = aircraft.ExploitationTimeSpan;
-        }
+        public void Add(Aircraft aircraft) => _repository.Create(ConvertToModel(aircraft));
+        
+        public void Update(Aircraft aircraft) => _repository.Update(ConvertToModel(aircraft));
+        
+        public void Remove(int id) => _repository.Delete(id);
 
-        public void RemoveAircraft(int id) => DataSeends.Aircraft.Remove(IsAircraft(id));
-
-        public void RemoveAircrafts() => DataSeends.Aircraft.Clear();
+        public void RemoveAll() => _repository.Delete();
     }
 }
