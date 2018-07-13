@@ -16,6 +16,8 @@ namespace BusinessLayer.Services
         public AircraftTypeService(IRepository<DataAccessLayer.Models.AircraftType> repository)
             => _repository = repository;
 
+        public bool ValidationForeignId(AircraftType ob) => true;
+
         public AircraftType IsExist(int id)
             => Mapper.Map<DataAccessLayer.Models.AircraftType, AircraftType>(_repository.Get(id).FirstOrDefault());
 

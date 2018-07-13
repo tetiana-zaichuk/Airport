@@ -10,9 +10,17 @@ namespace BusinessLayer.Services
     public class TicketService : IService<Ticket>
     {
         private readonly IRepository<DataAccessLayer.Models.Ticket> _repository;
+        private readonly IRepository<DataAccessLayer.Models.Flight> _repositoryFlight;
 
-        public TicketService(IRepository<DataAccessLayer.Models.Ticket> repository)
-            => _repository = repository;
+        public TicketService(IRepository<DataAccessLayer.Models.Ticket> repository,
+                        IRepository<DataAccessLayer.Models.Flight> repositoryFlight)
+        {
+            _repository = repository;
+            _repositoryFlight = repositoryFlight;
+        }
+
+        public bool ValidationForeignId(Ticket ob)
+            => _repositoryFlight.Get().FirstOrDefault(o => o.Id == ob.FlightId) != null;
 
         public Ticket IsExist(int id)
             => Mapper.Map<DataAccessLayer.Models.Ticket, Ticket>(_repository.Get(id).FirstOrDefault());

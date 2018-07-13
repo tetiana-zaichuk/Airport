@@ -14,6 +14,8 @@ namespace BusinessLayer.Services
         public StewardessService(IRepository<DataAccessLayer.Models.Stewardess> repository)
             => _repository = repository;
 
+        public bool ValidationForeignId(Stewardess ob) => true;
+
         public Stewardess IsExist(int id)
             => Mapper.Map<DataAccessLayer.Models.Stewardess, Stewardess>(_repository.Get(id).FirstOrDefault());
 

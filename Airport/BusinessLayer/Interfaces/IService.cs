@@ -4,6 +4,8 @@ namespace BusinessLayer.Interfaces
 {
     public interface IService<T>
     {
+        bool ValidationForeignId(T ob);
+
         T IsExist(int id);
 
         List<T> GetAll();

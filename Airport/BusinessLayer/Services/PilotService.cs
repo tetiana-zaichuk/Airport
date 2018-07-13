@@ -14,6 +14,8 @@ namespace BusinessLayer.Services
         public PilotService(IRepository<DataAccessLayer.Models.Pilot> repository)
             => _repository = repository;
 
+        public bool ValidationForeignId(Pilot ob) => true;
+
         public Pilot IsExist(int id)
             => Mapper.Map<DataAccessLayer.Models.Pilot, Pilot>(_repository.Get(id).FirstOrDefault());
 

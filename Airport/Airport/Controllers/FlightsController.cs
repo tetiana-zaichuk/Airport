@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using BusinessLayer.Interfaces;
@@ -33,11 +34,13 @@ namespace PresentationLayer.Controllers
         {
             if (flight == null)
                 return BadRequest("Enter correct entity");
-            if (DateTime.Compare(flight.DepartureTime, flight.ArrivalTime) >= 0)
-                return BadRequest("Wrong departure/arrival date");
             if (flight.Id != 0)
                 return BadRequest("You can`t enter the id");
+            if (DateTime.Compare(flight.DepartureTime, flight.ArrivalTime) >= 0)
+                return BadRequest("Wrong departure/arrival date");
             flight.Id = Services.GetAll().Count + 1;
+            if (!Services.ValidationForeignId(flight))
+                return BadRequest("Wrong foreign id");
             Services.Add(flight);
             return Ok(flight);
         }
@@ -55,6 +58,8 @@ namespace PresentationLayer.Controllers
                 if (flight.Id == 0) flight.Id = id;
                 else return BadRequest("You can`t change the id");
             }
+            if (!Services.ValidationForeignId(flight))
+                return BadRequest("Wrong foreign id");
             Services.Update(flight);
             return Ok(flight);
         }

@@ -15,6 +15,6 @@ namespace Shared.DTO
         public string Destination { get; set; }
         [Required]
         public DateTime ArrivalTime { get; set; }
-        public List<Ticket> Tickets = new List<Ticket>();
+        public List<int> TicketsId = new List<int>();
     }
 }

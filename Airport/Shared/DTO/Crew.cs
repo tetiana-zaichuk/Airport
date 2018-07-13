@@ -9,6 +9,6 @@ namespace Shared.DTO
         [Required]
         public int PilotId { get; set; }
         [Required]
-        public List<Stewardess> Stewardesses=new List<Stewardess>();
+        public List<int> StewardessesId=new List<int>();
     }
 }

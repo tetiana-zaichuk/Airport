@@ -10,9 +10,27 @@ namespace BusinessLayer.Services
     public class DepartureService : IService<Departure>
     {
         private readonly IRepository<DataAccessLayer.Models.Departure> _repository;
+        private readonly IRepository<DataAccessLayer.Models.Aircraft> _repositoryAircraft;
+        private readonly IRepository<DataAccessLayer.Models.Crew> _repositoryCrew;
+        private readonly IRepository<DataAccessLayer.Models.Flight> _repositoryFlight;
 
-        public DepartureService(IRepository<DataAccessLayer.Models.Departure> repository)
-            => _repository = repository;
+        public DepartureService(IRepository<DataAccessLayer.Models.Departure> repository, 
+            IRepository<DataAccessLayer.Models.Aircraft> repositoryAircraft, 
+            IRepository<DataAccessLayer.Models.Crew> repositoryCrew, 
+            IRepository<DataAccessLayer.Models.Flight> repositoryFlight)
+        {
+            _repository = repository;
+            _repositoryAircraft = repositoryAircraft;
+            _repositoryCrew = repositoryCrew;
+            _repositoryFlight = repositoryFlight;
+        }
+
+        public bool ValidationForeignId(Departure ob)
+        {
+             return _repositoryAircraft.Get().FirstOrDefault(o => o.Id == ob.AircraftId) != null &&
+            _repositoryCrew.Get().FirstOrDefault(o => o.Id == ob.CrewId) != null &&
+            _repositoryFlight.Get().FirstOrDefault(o => o.Id == ob.FlightId) != null;
+        }
 
         public Departure IsExist(int id)
             => Mapper.Map<DataAccessLayer.Models.Departure, Departure>(_repository.Get(id).FirstOrDefault());

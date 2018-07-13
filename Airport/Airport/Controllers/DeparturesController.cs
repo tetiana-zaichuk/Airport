@@ -36,6 +36,8 @@ namespace PresentationLayer.Controllers
                 return BadRequest("Enter correct entity");
             if (DateTime.Compare(departure.DepartureDate, DateTime.UtcNow) < 0)
                 return BadRequest("Wrong departure date");
+            if (!Services.ValidationForeignId(departure))
+                return BadRequest("Wrong foreign id");
             if (departure.Id != 0)
                 return BadRequest("You can`t enter the id");
             departure.Id = Services.GetAll().Count+1;
@@ -51,6 +53,8 @@ namespace PresentationLayer.Controllers
                 return NotFound("Entity with id = " + id + " not found");
             if (DateTime.Compare(departure.DepartureDate, DateTime.UtcNow) < 0)
                 return BadRequest("Wrong departure date");
+            if (!Services.ValidationForeignId(departure))
+                return BadRequest("Wrong foreign id");
             if (departure.Id != id)
             {
                 if (departure.Id==0) departure.Id = id;

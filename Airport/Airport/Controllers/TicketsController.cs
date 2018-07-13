@@ -23,7 +23,8 @@ namespace PresentationLayer.Controllers
         [HttpGet("{id}")]
         public ObjectResult GetTicketDetails(int id)
         {
-            if (Services.IsExist(id) == null) return NotFound("Aircraft with id = " + id + " not found");
+            if (Services.IsExist(id) == null)
+                return NotFound("Aircraft with id = " + id + " not found");
             return Ok(Services.GetDetails(id));
         }
 
@@ -33,6 +34,8 @@ namespace PresentationLayer.Controllers
         {
             if (ticket == null)
                 return BadRequest("Enter correct entity");
+            if (!Services.ValidationForeignId(ticket))
+                return BadRequest("Wrong foreign id");
             if (ticket.Id != 0)
                 return BadRequest("You can`t enter the id");
             ticket.Id = Services.GetAll().Count + 1;
@@ -46,6 +49,8 @@ namespace PresentationLayer.Controllers
         {
             if (ticket == null || Services.IsExist(id) == null)
                 return NotFound("Entity with id = " + id + " not found");
+            if (!Services.ValidationForeignId(ticket))
+                return BadRequest("Wrong foreign id");
             if (ticket.Id != id)
             {
                 if (ticket.Id == 0) ticket.Id = id;

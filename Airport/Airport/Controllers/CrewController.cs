@@ -32,6 +32,8 @@ namespace PresentationLayer.Controllers
         {
             if (crew == null)
                 return BadRequest("Enter correct entity");
+            if (!Services.ValidationForeignId(crew))
+                return BadRequest("Wrong foreign id");
             if (crew.Id != 0)
                 return BadRequest("You can`t enter the id");
             crew.Id = Services.GetAll().Count + 1;
@@ -45,6 +47,8 @@ namespace PresentationLayer.Controllers
         {
             if (crew == null || Services.IsExist(id) == null)
                 return NotFound("Entity with id = " + id + " not found");
+            if (!Services.ValidationForeignId(crew))
+                return BadRequest("Wrong foreign id");
             if (crew.Id != id)
             {
                 if (crew.Id == 0) crew.Id = id;
