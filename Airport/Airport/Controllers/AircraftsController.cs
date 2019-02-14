@@ -21,12 +21,8 @@ namespace PresentationLayer.Controllers
 
         // GET api/Aircrafts/5
         [HttpGet("{id}")]
-        public ObjectResult GetAircraftDetails(int id)
-        {
-            if (Services.IsExist(id) == null)
-                return NotFound("Aircraft with id = " + id + " not found");
-            return Ok(Services.GetDetails(id));
-        }
+        public ObjectResult GetAircraftDetails(int id) => Services.IsExist(id) == null
+                ? (ObjectResult)NotFound("Aircraft with id = " + id + " not found") : Ok(Services.GetDetails(id));
 
         // POST api/Aircrafts
         [HttpPost]

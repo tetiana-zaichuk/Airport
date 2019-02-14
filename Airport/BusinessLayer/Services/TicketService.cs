@@ -3,33 +3,29 @@ using System.Linq;
 using AutoMapper;
 using BusinessLayer.Interfaces;
 using DataAccessLayer;
+using Model = DataAccessLayer.Models;
 using Shared.DTO;
 
 namespace BusinessLayer.Services
 {
     public class TicketService : IService<Ticket>
     {
-        private readonly IRepository<DataAccessLayer.Models.Ticket> _repository;
-        private readonly IRepository<DataAccessLayer.Models.Flight> _repositoryFlight;
+        private readonly IRepository<Model.Ticket> _repository;
+        private readonly IRepository<Model.Flight> _repositoryFlight;
 
-        public TicketService(IRepository<DataAccessLayer.Models.Ticket> repository,
-                        IRepository<DataAccessLayer.Models.Flight> repositoryFlight)
+        public TicketService(IRepository<Model.Ticket> repository, IRepository<Model.Flight> repositoryFlight)
         {
             _repository = repository;
             _repositoryFlight = repositoryFlight;
         }
 
-        public bool ValidationForeignId(Ticket ob)
-            => _repositoryFlight.Get().FirstOrDefault(o => o.Id == ob.FlightId) != null;
+        public bool ValidationForeignId(Ticket ob) => _repositoryFlight.Get().FirstOrDefault(o => o.Id == ob.FlightId) != null;
 
-        public Ticket IsExist(int id)
-            => Mapper.Map<DataAccessLayer.Models.Ticket, Ticket>(_repository.Get(id).FirstOrDefault());
+        public Ticket IsExist(int id) => Mapper.Map<Model.Ticket, Ticket>(_repository.Get(id).FirstOrDefault());
 
-        public DataAccessLayer.Models.Ticket ConvertToModel(Ticket ticket)
-            => Mapper.Map<Ticket, DataAccessLayer.Models.Ticket>(ticket);
+        public Model.Ticket ConvertToModel(Ticket ticket) => Mapper.Map<Ticket, Model.Ticket>(ticket);
 
-        public List<Ticket> GetAll()
-            => Mapper.Map<List<DataAccessLayer.Models.Ticket>, List<Ticket>>(_repository.Get());
+        public List<Ticket> GetAll() => Mapper.Map<List<Model.Ticket>, List<Ticket>>(_repository.Get());
 
         public Ticket GetDetails(int id) => IsExist(id);
 

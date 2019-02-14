@@ -4,7 +4,6 @@ using System.Net;
 using System.Net.Http;
 using BusinessLayer.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using BusinessLayer.Services;
 using Shared.DTO;
 
 namespace PresentationLayer.Controllers
@@ -22,12 +21,9 @@ namespace PresentationLayer.Controllers
 
         // GET api/Departures/5
         [HttpGet("{id}")]
-        public ObjectResult GetDepartureDetails(int id)
-        {
-            if (Services.IsExist(id) == null) return NotFound("Departure with id = " + id + " not found");
-            return Ok(Services.GetDetails(id));
-        }
-
+        public ObjectResult GetDepartureDetails(int id) => Services.IsExist(id) == null
+            ? (ObjectResult) NotFound("Departure with id = " + id + " not found") : Ok(Services.GetDetails(id));
+        
         // POST api/Departures
         [HttpPost]
         public ObjectResult PostDeparture([FromBody]Departure departure)

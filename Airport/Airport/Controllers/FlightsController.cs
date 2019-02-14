@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using BusinessLayer.Interfaces;
@@ -22,12 +21,9 @@ namespace PresentationLayer.Controllers
 
         // GET api/Flights/5
         [HttpGet("{id}")]
-        public ObjectResult GetFlightDetails(int id)
-        {
-            if (Services.IsExist(id) == null) return NotFound("Flight with id = " + id + " not found");
-            return Ok(Services.GetDetails(id));
-        }
-
+        public ObjectResult GetFlightDetails(int id) => Services.IsExist(id) == null
+            ? (ObjectResult) NotFound("Flight with id = " + id + " not found") : Ok(Services.GetDetails(id));
+        
         // POST api/Flights
         [HttpPost]
         public ObjectResult PostFlight([FromBody]Flight flight)

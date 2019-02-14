@@ -1,31 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using AutoMapper;
 using BusinessLayer.Interfaces;
 using DataAccessLayer;
+using Model = DataAccessLayer.Models;
 using Shared.DTO;
 
 namespace BusinessLayer.Services
 {
     public class AircraftTypeService : IService<AircraftType>
     {
-        private readonly IRepository<DataAccessLayer.Models.AircraftType> _repository;
+        private readonly IRepository<Model.AircraftType> _repository;
 
-        public AircraftTypeService(IRepository<DataAccessLayer.Models.AircraftType> repository)
-            => _repository = repository;
+        public AircraftTypeService(IRepository<Model.AircraftType> repository) => _repository = repository;
 
         public bool ValidationForeignId(AircraftType ob) => true;
 
-        public AircraftType IsExist(int id)
-            => Mapper.Map<DataAccessLayer.Models.AircraftType, AircraftType>(_repository.Get(id).FirstOrDefault());
+        public AircraftType IsExist(int id) => Mapper.Map<Model.AircraftType, AircraftType>(_repository.Get(id).FirstOrDefault());
 
-        public DataAccessLayer.Models.AircraftType ConvertToModel(AircraftType aircraftType)
-            => Mapper.Map<AircraftType, DataAccessLayer.Models.AircraftType>(aircraftType);
+        public Model.AircraftType ConvertToModel(AircraftType aircraftType) => Mapper.Map<AircraftType, Model.AircraftType>(aircraftType);
 
-        public List<AircraftType> GetAll()
-            => Mapper.Map<List<DataAccessLayer.Models.AircraftType>, List<AircraftType>>(_repository.Get());
+        public List<AircraftType> GetAll() => Mapper.Map<List<Model.AircraftType>, List<AircraftType>>(_repository.Get());
 
         public AircraftType GetDetails(int id) => IsExist(id);
 

@@ -3,21 +3,20 @@ using System.Linq;
 using AutoMapper;
 using BusinessLayer.Interfaces;
 using DataAccessLayer;
+using Model = DataAccessLayer.Models;
 using Shared.DTO;
 
 namespace BusinessLayer.Services
 {
     public class DepartureService : IService<Departure>
     {
-        private readonly IRepository<DataAccessLayer.Models.Departure> _repository;
-        private readonly IRepository<DataAccessLayer.Models.Aircraft> _repositoryAircraft;
-        private readonly IRepository<DataAccessLayer.Models.Crew> _repositoryCrew;
-        private readonly IRepository<DataAccessLayer.Models.Flight> _repositoryFlight;
+        private readonly IRepository<Model.Departure> _repository;
+        private readonly IRepository<Model.Aircraft> _repositoryAircraft;
+        private readonly IRepository<Model.Crew> _repositoryCrew;
+        private readonly IRepository<Model.Flight> _repositoryFlight;
 
-        public DepartureService(IRepository<DataAccessLayer.Models.Departure> repository, 
-            IRepository<DataAccessLayer.Models.Aircraft> repositoryAircraft, 
-            IRepository<DataAccessLayer.Models.Crew> repositoryCrew, 
-            IRepository<DataAccessLayer.Models.Flight> repositoryFlight)
+        public DepartureService(IRepository<Model.Departure> repository, IRepository<Model.Aircraft> repositoryAircraft, 
+            IRepository<Model.Crew> repositoryCrew, IRepository<Model.Flight> repositoryFlight)
         {
             _repository = repository;
             _repositoryAircraft = repositoryAircraft;
@@ -32,14 +31,11 @@ namespace BusinessLayer.Services
             _repositoryFlight.Get().FirstOrDefault(o => o.Id == ob.FlightId) != null;
         }
 
-        public Departure IsExist(int id)
-            => Mapper.Map<DataAccessLayer.Models.Departure, Departure>(_repository.Get(id).FirstOrDefault());
+        public Departure IsExist(int id) => Mapper.Map<Model.Departure, Departure>(_repository.Get(id).FirstOrDefault());
 
-        public DataAccessLayer.Models.Departure ConvertToModel(Departure departure)
-            => Mapper.Map<Departure, DataAccessLayer.Models.Departure>(departure);
+        public Model.Departure ConvertToModel(Departure departure) => Mapper.Map<Departure, Model.Departure>(departure);
 
-        public List<Departure> GetAll()
-            => Mapper.Map<List<DataAccessLayer.Models.Departure>, List<Departure>>(_repository.Get());
+        public List<Departure> GetAll() => Mapper.Map<List<Model.Departure>, List<Departure>>(_repository.Get());
 
         public Departure GetDetails(int id) => IsExist(id);
 

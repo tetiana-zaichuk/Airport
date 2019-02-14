@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using DataAccessLayer.Models;
 
 namespace DataAccessLayer
@@ -10,10 +8,7 @@ namespace DataAccessLayer
     {
         protected readonly DataSeends Context;
 
-        public Repository(DataSeends context)
-        {
-            Context = context;
-        }
+        public Repository(DataSeends context) => Context = context;
 
         public virtual List<TEntity> Get(int? filter = null)
         {
@@ -27,10 +22,7 @@ namespace DataAccessLayer
             return query.ToList();
         }
 
-        public virtual void Create(TEntity entity)
-        {
-            Context.Set<TEntity>().Add(entity);
-        }
+        public virtual void Create(TEntity entity) => Context.Set<TEntity>().Add(entity);
 
         public virtual void Update(TEntity entity)
         {
@@ -52,9 +44,6 @@ namespace DataAccessLayer
             }
         }
 
-        public virtual void Delete(TEntity entity)
-        {
-            Context.Set<TEntity>().Remove(entity);
-        }
+        public virtual void Delete(TEntity entity) => Context.Set<TEntity>().Remove(entity);
     }
 }

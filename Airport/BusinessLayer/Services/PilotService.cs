@@ -3,27 +3,24 @@ using System.Linq;
 using AutoMapper;
 using BusinessLayer.Interfaces;
 using DataAccessLayer;
+using Model = DataAccessLayer.Models;
 using Shared.DTO;
 
 namespace BusinessLayer.Services
 {
     public class PilotService : IService<Pilot>
     {
-        private readonly IRepository<DataAccessLayer.Models.Pilot> _repository;
+        private readonly IRepository<Model.Pilot> _repository;
 
-        public PilotService(IRepository<DataAccessLayer.Models.Pilot> repository)
-            => _repository = repository;
+        public PilotService(IRepository<Model.Pilot> repository) => _repository = repository;
 
         public bool ValidationForeignId(Pilot ob) => true;
 
-        public Pilot IsExist(int id)
-            => Mapper.Map<DataAccessLayer.Models.Pilot, Pilot>(_repository.Get(id).FirstOrDefault());
+        public Pilot IsExist(int id) => Mapper.Map<Model.Pilot, Pilot>(_repository.Get(id).FirstOrDefault());
 
-        public DataAccessLayer.Models.Pilot ConvertToModel(Pilot pilot)
-            => Mapper.Map<Pilot, DataAccessLayer.Models.Pilot>(pilot);
+        public Model.Pilot ConvertToModel(Pilot pilot) => Mapper.Map<Pilot, Model.Pilot>(pilot);
 
-        public List<Pilot> GetAll()
-            => Mapper.Map<List<DataAccessLayer.Models.Pilot>, List<Pilot>>(_repository.Get());
+        public List<Pilot> GetAll() => Mapper.Map<List<Model.Pilot>, List<Pilot>>(_repository.Get());
 
         public Pilot GetDetails(int id) => IsExist(id);
 

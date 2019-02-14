@@ -21,10 +21,7 @@ namespace PresentationLayer.Controllers
 
         // GET api/AircraftsTypes/5
         [HttpGet("{id}")]
-        public ObjectResult GetAircraftTypeDetails(int id)
-        {
-            return Ok(Services.GetDetails(id));
-        }
+        public ObjectResult GetAircraftTypeDetails(int id) => Ok(Services.GetDetails(id));
 
         // POST api/AircraftsTypes
         [HttpPost]
