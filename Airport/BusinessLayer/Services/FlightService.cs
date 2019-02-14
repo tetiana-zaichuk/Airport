@@ -3,17 +3,17 @@ using System.Linq;
 using AutoMapper;
 using BusinessLayer.Interfaces;
 using DataAccessLayer;
+using Model = DataAccessLayer.Models;
 using Shared.DTO;
 
 namespace BusinessLayer.Services
 {
     public class FlightService : IService<Flight>
     {
-        private readonly IRepository<DataAccessLayer.Models.Flight> _repository;
-        private readonly IRepository<DataAccessLayer.Models.Ticket> _repositoryTicket;
+        private readonly IRepository<Model.Flight> _repository;
+        private readonly IRepository<Model.Ticket> _repositoryTicket;
 
-        public FlightService(IRepository<DataAccessLayer.Models.Flight> repository,
-            IRepository<DataAccessLayer.Models.Ticket> repositoryTicket)
+        public FlightService(IRepository<Model.Flight> repository, IRepository<Model.Ticket> repositoryTicket)
         {
             _repository = repository;
             _repositoryTicket = repositoryTicket;
@@ -28,11 +28,11 @@ namespace BusinessLayer.Services
             return true;
         }
 
-        public Flight IsExist(int id) => Mapper.Map<DataAccessLayer.Models.Flight, Flight>(_repository.Get(id).FirstOrDefault());
+        public Flight IsExist(int id) => Mapper.Map<Model.Flight, Flight>(_repository.Get(id).FirstOrDefault());
 
-        public DataAccessLayer.Models.Flight ConvertToModel(Flight flight) => Mapper.Map<Flight, DataAccessLayer.Models.Flight>(flight);
+        public Model.Flight ConvertToModel(Flight flight) => Mapper.Map<Flight, Model.Flight>(flight);
         
-        public List<Flight> GetAll() => Mapper.Map<List<DataAccessLayer.Models.Flight>, List<Flight>>(_repository.Get());
+        public List<Flight> GetAll() => Mapper.Map<List<Model.Flight>, List<Flight>>(_repository.Get());
 
         public Flight GetDetails(int id) => IsExist(id);
 

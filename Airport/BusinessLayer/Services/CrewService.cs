@@ -3,18 +3,18 @@ using System.Linq;
 using AutoMapper;
 using BusinessLayer.Interfaces;
 using DataAccessLayer;
+using Model = DataAccessLayer.Models;
 using Shared.DTO;
 
 namespace BusinessLayer.Services
 {
     public class CrewService : IService<Crew>
     {
-        private readonly IRepository<DataAccessLayer.Models.Crew> _repository;
-        private readonly IRepository<DataAccessLayer.Models.Pilot> _repositoryPilot;
-        private readonly IRepository<DataAccessLayer.Models.Stewardess> _repositoryStewardess;
+        private readonly IRepository<Model.Crew> _repository;
+        private readonly IRepository<Model.Pilot> _repositoryPilot;
+        private readonly IRepository<Model.Stewardess> _repositoryStewardess;
 
-        public CrewService(IRepository<DataAccessLayer.Models.Crew> repository, 
-            IRepository<DataAccessLayer.Models.Pilot> rP, IRepository<DataAccessLayer.Models.Stewardess> rSt)
+        public CrewService(IRepository<Model.Crew> repository, IRepository<Model.Pilot> rP, IRepository<Model.Stewardess> rSt)
         {
             _repository = repository;
             _repositoryPilot = rP;
@@ -30,11 +30,11 @@ namespace BusinessLayer.Services
             return _repositoryPilot.Get().FirstOrDefault(o => o.Id == ob.PilotId) != null;
         }
 
-        public Crew IsExist(int id) => Mapper.Map<DataAccessLayer.Models.Crew, Crew>(_repository.Get(id).FirstOrDefault());
+        public Crew IsExist(int id) => Mapper.Map<Model.Crew, Crew>(_repository.Get(id).FirstOrDefault());
 
-        public DataAccessLayer.Models.Crew ConvertToModel(Crew crew) => Mapper.Map<Crew, DataAccessLayer.Models.Crew>(crew);
+        public Model.Crew ConvertToModel(Crew crew) => Mapper.Map<Crew, Model.Crew>(crew);
 
-        public List<Crew> GetAll() => Mapper.Map<List<DataAccessLayer.Models.Crew>, List<Crew>>(_repository.Get());
+        public List<Crew> GetAll() => Mapper.Map<List<Model.Crew>, List<Crew>>(_repository.Get());
 
         public Crew GetDetails(int id) => IsExist(id);
 

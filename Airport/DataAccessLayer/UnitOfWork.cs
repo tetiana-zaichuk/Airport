@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using DataAccessLayer.Models;
+﻿using DataAccessLayer.Models;
 
 namespace DataAccessLayer
 {
@@ -12,7 +8,7 @@ namespace DataAccessLayer
 
         public UnitOfWork(DataSeends context)
         {
-            this.Context = context;
+            Context = context;
         }
 
         public IRepository<TEntity> Set<TEntity>() where TEntity : Entity

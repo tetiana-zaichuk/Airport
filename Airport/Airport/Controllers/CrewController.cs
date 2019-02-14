@@ -20,11 +20,8 @@ namespace PresentationLayer.Controllers
 
         // GET api/Crew/5
         [HttpGet("{id}")]
-        public ObjectResult GetCrewDetails(int id)
-        {
-            if (Services.IsExist(id) == null) return NotFound("Crew with id = " + id + " not found");
-            return Ok(Services.GetDetails(id));
-        }
+        public ObjectResult GetCrewDetails(int id) => Services.IsExist(id) == null 
+            ? (ObjectResult) NotFound("Crew with id = " + id + " not found") : Ok(Services.GetDetails(id));
 
         // POST api/Crew
         [HttpPost]

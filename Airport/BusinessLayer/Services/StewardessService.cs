@@ -3,27 +3,24 @@ using System.Linq;
 using AutoMapper;
 using BusinessLayer.Interfaces;
 using DataAccessLayer;
+using Model = DataAccessLayer.Models;
 using Shared.DTO;
 
 namespace BusinessLayer.Services
 {
     public class StewardessService : IService<Stewardess>
     {
-        private readonly IRepository<DataAccessLayer.Models.Stewardess> _repository;
+        private readonly IRepository<Model.Stewardess> _repository;
 
-        public StewardessService(IRepository<DataAccessLayer.Models.Stewardess> repository)
-            => _repository = repository;
+        public StewardessService(IRepository<Model.Stewardess> repository) => _repository = repository;
 
         public bool ValidationForeignId(Stewardess ob) => true;
 
-        public Stewardess IsExist(int id)
-            => Mapper.Map<DataAccessLayer.Models.Stewardess, Stewardess>(_repository.Get(id).FirstOrDefault());
+        public Stewardess IsExist(int id) => Mapper.Map<Model.Stewardess, Stewardess>(_repository.Get(id).FirstOrDefault());
 
-        public DataAccessLayer.Models.Stewardess ConvertToModel(Stewardess stewardess)
-            => Mapper.Map<Stewardess, DataAccessLayer.Models.Stewardess>(stewardess);
+        public Model.Stewardess ConvertToModel(Stewardess stewardess) => Mapper.Map<Stewardess, Model.Stewardess>(stewardess);
 
-        public List<Stewardess> GetAll()
-            => Mapper.Map<List<DataAccessLayer.Models.Stewardess>, List<Stewardess>>(_repository.Get());
+        public List<Stewardess> GetAll() => Mapper.Map<List<Model.Stewardess>, List<Stewardess>>(_repository.Get());
 
         public Stewardess GetDetails(int id) => IsExist(id);
 

@@ -3,7 +3,6 @@ using System.Net;
 using System.Net.Http;
 using BusinessLayer.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using BusinessLayer.Services;
 using Shared.DTO;
 
 namespace PresentationLayer.Controllers
@@ -21,13 +20,9 @@ namespace PresentationLayer.Controllers
 
         // GET api/Tickets/5
         [HttpGet("{id}")]
-        public ObjectResult GetTicketDetails(int id)
-        {
-            if (Services.IsExist(id) == null)
-                return NotFound("Aircraft with id = " + id + " not found");
-            return Ok(Services.GetDetails(id));
-        }
-
+        public ObjectResult GetTicketDetails(int id) => Services.IsExist(id) == null
+            ? (ObjectResult) NotFound("Ticket with id = " + id + " not found") : Ok(Services.GetDetails(id));
+        
         // POST api/Tickets
         [HttpPost]
         public ObjectResult PostTicket([FromBody]Ticket ticket)

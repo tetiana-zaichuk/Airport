@@ -5,7 +5,6 @@ namespace Shared.DTO
 {
     public class Departure
     {
-        
         public int Id { get; set; }
         [Required]
         public int FlightId { get; set; }

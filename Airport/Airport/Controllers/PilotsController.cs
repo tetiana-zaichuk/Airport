@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using BusinessLayer.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using BusinessLayer.Services;
 using Shared.DTO;
 
 namespace PresentationLayer.Controllers
@@ -22,12 +20,9 @@ namespace PresentationLayer.Controllers
 
         // GET api/Pilots/5
         [HttpGet("{id}")]
-        public ObjectResult GetPilotDetails(int id)
-        {
-            if (Services.IsExist(id) == null) return NotFound("Aircraft with id = " + id + " not found");
-            return Ok(Services.GetDetails(id));
-        }
-
+        public ObjectResult GetPilotDetails(int id) => Services.IsExist(id) == null
+            ? (ObjectResult) NotFound("Pilot with id = " + id + " not found") : Ok(Services.GetDetails(id));
+        
         // POST api/Pilots
         [HttpPost]
         public ObjectResult PostPilot([FromBody]Pilot pilot)
